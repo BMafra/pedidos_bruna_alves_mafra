@@ -1,4 +1,3 @@
-const { async } = require('@firebase/util');
 const express = require('express');
 const router = express.Router();
 const orderPrductsHandler = require('./orderProducts.handler');

@@ -1,5 +1,5 @@
 const { save, get, getById, remove } = require('../../crud/index');
-const tabela = "orderProducts"
+const tabela = "orderProducts";
 
 async function buscarOrderProducts(){
     return await get(tabela);
