@@ -18,6 +18,14 @@ async function editarUsers(id, dado){
 }
 
 async function deletarUsers(id){
+    const todosUsuarios = await buscarUsers();
+
+    for(const usuario of todosUsuarios){
+        if(usuario.id != id){
+            return {erro: "Erro ao encontrar usuário"}
+        }
+    } 
+
     return await remove(tabela, id);
 }
 

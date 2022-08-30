@@ -18,6 +18,14 @@ async function editarProducts(id, dado){
 }
 
 async function deletarProducts(id){
+    const todosProdutos = await buscarProducts();
+
+    for(const produto of todosProdutos){
+        if(produto.id != id){
+            return {erro: "Erro ao encontrar produto!"}
+        }
+    } 
+
     return await remove(tabela, id);
 }
 

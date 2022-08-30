@@ -8,7 +8,8 @@ const {
     query,
     where,
     getDoc,
-    deleteDoc }
+    deleteDoc,
+    doc }
     = require('firebase/firestore/lite');
 //conecta bd
 
@@ -68,10 +69,10 @@ async function getById(nomeTabela, id) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
+        console.log("Usuário encontrado! (crud)")
         return docSnap.data();
     } else {
-
-        return new Error("not found")
+        console.log("Erro ao encontrar usuário! (crud)")
     }
 }
 
