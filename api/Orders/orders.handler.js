@@ -11,19 +11,17 @@ async function buscarOrdersId(id) {
 }
 
 async function cadastrarOrders(dado) {
-    const todosUsuarios = await buscarUsers();
+    const usuario = (await buscarUsers()).find(e => e.id == dado.userId);
     const todosPedidos = await buscarOrders();
 
-    for (const usuario of todosUsuarios) {
-        if (!usuario.id === dado.userId) {
-            return { erro: "Erro ao encontrar usuário" }
-        }
-    } //mesma logica para produto
+    if (usuario == undefined) {
+        return { erro: "Erro ao encontrar usuário!" }
+    }
 
     for (const pedido of todosPedidos) {
         if (pedido.userId == dado.userId) {
             if (pedido.status == "aberto") {
-                return { erro: "Esse usuário já possui um pedido em aberto!"}
+                return { erro: "Esse usuário já possui um pedido em aberto!" }
             }
         }
     }

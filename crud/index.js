@@ -28,6 +28,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 
 async function save(nomeTabela, id, dado) {
+    console.log("entrou");
     if (id) {
         const referenceEntity = await setDoc(doc(db, nomeTabela, id), dado);
         const savedData = {
@@ -59,7 +60,7 @@ async function get(nomeTabela) {
             id: doc.id
         }
         lista.push(data);
-        console.log(doc.id, " => ", doc.data());
+        // console.log(doc.id, " => ", doc.data());
     });
     return lista;
 }

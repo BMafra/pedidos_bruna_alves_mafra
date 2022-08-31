@@ -1,30 +1,28 @@
 const { save, get, getById, remove } = require('../../crud/index');
 const tabela = "users";
 
-async function buscarUsers(){
+async function buscarUsers() {
     return await get(tabela);
 }
 
-async function buscarUsersId(id){
+async function buscarUsersId(id) {
     return await getById(tabela, id);
 }
 
-async function cadastrarUsers(dado){
+async function cadastrarUsers(dado) {
     return await save(tabela, null, dado);
 }
 
-async function editarUsers(id, dado){
+async function editarUsers(id, dado) {
     return await save(tabela, id, dado);
 }
 
-async function deletarUsers(id){
-    const todosUsuarios = await buscarUsers();
+async function deletarUsers(id) {
+    const usuario = await (await buscarUsers()).find(e => e.id == id);
 
-    for(const usuario of todosUsuarios){
-        if(usuario.id != id){
-            return {erro: "Erro ao encontrar usuário"}
-        }
-    } 
+    if (usuario == undefined) {
+        return { erro: "Erro ao encontrar usuário" }
+    }
 
     return await remove(tabela, id);
 }

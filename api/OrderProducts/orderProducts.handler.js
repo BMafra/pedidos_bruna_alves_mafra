@@ -1,23 +1,53 @@
 const { save, get, getById, remove } = require('../../crud/index');
+const { buscarProducts } = require("../Products/products.handler");
+const { buscarOrders } = require('../Orders/orders.handler');
 const tabela = "orderProducts";
 
-async function buscarOrderProducts(){
+async function buscarOrderProducts() {
     return await get(tabela);
 }
 
-async function buscarOrderProductsId(id){
+async function buscarOrderProductsId(id) {
     return await getById(tabela, id);
 }
 
-async function cadastrarOrderProducts(dado){
-    return await save(tabela, null, dado);
+async function cadastrarOrderProducts(dado) {
+    const pedido = (await buscarOrders()).find(e => e.id == dado.orderId);
+    const produtos = (await buscarProducts());
+    const dadosProdutos = dado.productIds;
+
+    if(pedido == undefined){
+        return { erro: "Pedido não encontrado!" }
+    }
+
+    for (const dadoProduto of dadosProdutos) {
+        let encontrado = true;
+        for (const produto of produtos) {
+            if (dadoProduto.productId == produto.id) {
+                encontrado = false;
+            }
+        }
+
+        if (encontrado == true) {
+            return { erro: "Produto(s) não encontrado(s)!" }
+        }
+    }
+
+    for (const dadoProduto of dadosProdutos) {
+        const novoProdutoPedido = {
+            productId: dadoProduto.productId,
+            quantity: dadoProduto.quantity,
+            orderId: dado.orderId
+        }
+        await save(tabela, null, novoProdutoPedido);
+    }
 }
 
-async function editarOrderProducts(id, dado){
+async function editarOrderProducts(id, dado) {
     return await save(tabela, id, dado);
 }
 
-async function deletarOrderProducts(id){
+async function deletarOrderProducts(id) {
     return await remove(tabela, id);
 }
 
