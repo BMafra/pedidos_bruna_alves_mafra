@@ -16,7 +16,7 @@ async function cadastrarOrderProducts(dado) {
     const produtos = (await buscarProducts());
     const dadosProdutos = dado.productIds;
 
-    if(pedido == undefined){
+    if (pedido == undefined) {
         return { erro: "Pedido não encontrado!" }
     }
 
@@ -43,6 +43,16 @@ async function cadastrarOrderProducts(dado) {
     }
 }
 
+async function fecharOrders(id) {
+    const pedido = (await buscarOrderProducts()).filter(e => e.orderId == id);
+    for(const pedidoId of pedido){
+        console.log(pedidoId);
+        if(pedidoId.productId == ""){
+            return { erro: "Pedido sem nenhum produto!"}
+        }
+    }
+}
+
 async function editarOrderProducts(id, dado) {
     return await save(tabela, id, dado);
 }
@@ -56,5 +66,6 @@ module.exports = {
     buscarOrderProductsId,
     cadastrarOrderProducts,
     editarOrderProducts,
+    fecharOrders,
     deletarOrderProducts
 }
