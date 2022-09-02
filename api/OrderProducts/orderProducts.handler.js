@@ -1,6 +1,6 @@
 const { save, get, getById, remove } = require('../../crud/index');
 const { buscarProducts } = require("../Products/products.handler");
-const { buscarOrders } = require('../Orders/orders.handler');
+const { buscarOrders, buscarOrdersId, editarOrders } = require('../Orders/orders.handler');
 const tabela = "orderProducts";
 
 async function buscarOrderProducts() {
@@ -43,14 +43,27 @@ async function cadastrarOrderProducts(dado) {
     }
 }
 
-async function fecharOrders(id) {
-    const pedido = (await buscarOrderProducts()).filter(e => e.orderId == id);
-    for(const pedidoId of pedido){
-        console.log(pedidoId);
-        if(pedidoId.productId == ""){
-            return { erro: "Pedido sem nenhum produto!"}
-        }
+async function fecharOrders(idPedido) {
+    const pedido = (await buscarOrders()).find(e => e.id == idPedido);
+    if (pedido == undefined) {
+        return { erro: "Pedido não encontrado!" }
     }
+
+    const pedidosProdutos = (await buscarOrderProducts()).filter(e => e.orderId == idPedido);
+    if (pedidosProdutos == [] || pedidosProdutos == undefined || pedidosProdutos == "") {
+        return { erro: "Pedido sem produto!" };
+    }
+
+    if (pedido.status == "Fechado") {
+        return { erro: "O pedido já está fechado!" }
+    }
+
+    const novoPedido = {
+        number: pedido.number,
+        userId: pedido.userId,
+        status: "Fechado"
+    }
+    await editarOrders(idPedido, novoPedido);
 }
 
 async function editarOrderProducts(id, dado) {

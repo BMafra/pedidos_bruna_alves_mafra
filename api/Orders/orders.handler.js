@@ -40,6 +40,10 @@ async function editarOrders(id, dado) {
 }
 
 async function deletarOrders(id) {
+    const pedido = (await buscarOrders()).find(e => e.id == id);
+    if (pedido == undefined) {
+        return { erro: "Pedido não encontrado!" }
+    }
     return await remove(tabela, id);
 }
 
