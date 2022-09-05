@@ -6,6 +6,12 @@ async function buscarUsers() {
 }
 
 async function buscarUsersId(id) {
+    const usuario = await (await buscarUsers()).find(e => e.id == id);
+
+    if (usuario == undefined) {
+        return { erro: "Erro ao encontrar usuário" }
+    }
+    
     return await getById(tabela, id);
 }
 

@@ -20,6 +20,10 @@ async function cadastrarOrderProducts(dado) {
         return { erro: "Pedido não encontrado!" }
     }
 
+    if (pedido.status == "Fechado") {
+        return { erro: "Você não pode adicionar ou retirar produtos em um pedido fechado!" }
+    }
+
     for (const dadoProduto of dadosProdutos) {
         let encontrado = true;
         for (const produto of produtos) {
@@ -29,14 +33,18 @@ async function cadastrarOrderProducts(dado) {
         }
 
         if (encontrado == true) {
-            return { erro: "Produto(s) não encontrado(s)!" }
+            return { erro: "Produto não encontrado!" }
+        }
+
+        if (dadoProduto.quantity <= 0) {
+            //deletar da tabela
+            return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
         }
     }
 
     for (const dadoProduto of dadosProdutos) {
         const novoProdutoPedido = {
-            productId: dadoProduto.productId,
-            quantity: dadoProduto.quantity,
+            productIds: dadoProduto,
             orderId: dado.orderId
         }
         await save(tabela, null, novoProdutoPedido);
@@ -45,11 +53,12 @@ async function cadastrarOrderProducts(dado) {
 
 async function fecharOrders(idPedido) {
     const pedido = (await buscarOrders()).find(e => e.id == idPedido);
+    const pedidosProdutos = (await buscarOrderProducts()).filter(e => e.orderId == idPedido);
+
     if (pedido == undefined) {
         return { erro: "Pedido não encontrado!" }
     }
 
-    const pedidosProdutos = (await buscarOrderProducts()).filter(e => e.orderId == idPedido);
     if (pedidosProdutos == [] || pedidosProdutos == undefined || pedidosProdutos == "") {
         return { erro: "Pedido sem produto!" };
     }
@@ -67,7 +76,40 @@ async function fecharOrders(idPedido) {
 }
 
 async function editarOrderProducts(id, dado) {
-    return await save(tabela, id, dado);
+    const pedidoProduto = (await buscarOrderProducts()).find(e => e.id == id);
+    const pedido = (await buscarOrders()).find(e => e.id == dado.orderId);
+    console.log(pedidoProduto , "\ndado: ", dado);
+    // if(pedidoProduto == undefined){
+    //     return { erro: "Erro ao encontrar 'orderProducts'"}
+    // }
+
+    // if (pedido == undefined) {
+    //     return { erro: "Pedido não encontrado!" }
+    // }
+
+    // if(pedido.status == "Fechado"){
+    //     return { erro: "Você não pode adicionar ou retirar produtos em um pedido fechado!"}
+    // } 
+
+    // if(pedido.quantity <= 0){
+    //     return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
+    // }
+    
+    if (pedidoProduto.productIds.productId == dado.productId) {
+        //console.log(dado.productId);
+        const produtos = {
+            productId: pedidoProduto.productIds.productId,
+            quantity: pedidoProduto.productIds.quantity + dado.quantity
+        }
+        const novoProdutoPedido = {
+            productIds: produtos,
+            orderId: dado.orderId
+        }
+        //console.log(novoProdutoPedido);
+    }
+
+
+    //return await save(tabela, id, dado);
 }
 
 async function deletarOrderProducts(id) {

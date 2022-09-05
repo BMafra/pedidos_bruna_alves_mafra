@@ -6,6 +6,14 @@ async function buscarProducts(){
 }
 
 async function buscarProductsId(id){
+    const todosProdutos = await buscarProducts();
+
+    for(const produto of todosProdutos){
+        if(produto.id != id){
+            return {erro: "Erro ao encontrar produto!"}
+        }
+    } 
+    
     return await getById(tabela, id);
 }
 
