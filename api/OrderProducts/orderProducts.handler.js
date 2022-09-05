@@ -1,6 +1,6 @@
 const { save, get, getById, remove } = require('../../crud/index');
 const { buscarProducts } = require("../Products/products.handler");
-const { buscarOrders, buscarOrdersId, editarOrders } = require('../Orders/orders.handler');
+const { buscarOrders, editarOrders } = require('../Orders/orders.handler');
 const tabela = "orderProducts";
 
 async function buscarOrderProducts() {
@@ -36,8 +36,7 @@ async function cadastrarOrderProducts(dado) {
             return { erro: "Produto não encontrado!" }
         }
 
-        if (dadoProduto.quantity <= 0) {
-            //deletar da tabela
+        if (dadoProduto.quantity <= 0) { //deletar da tabela
             return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
         }
     }
@@ -60,7 +59,7 @@ async function fecharOrders(idPedido) {
     }
 
     if (pedidosProdutos == [] || pedidosProdutos == undefined || pedidosProdutos == "") {
-        return { erro: "Pedido sem produto!" };
+        return { erro: "Pedido sem produto!" }
     }
 
     if (pedido.status == "Fechado") {
@@ -78,38 +77,34 @@ async function fecharOrders(idPedido) {
 async function editarOrderProducts(id, dado) {
     const pedidoProduto = (await buscarOrderProducts()).find(e => e.id == id);
     const pedido = (await buscarOrders()).find(e => e.id == dado.orderId);
-    console.log(pedidoProduto , "\ndado: ", dado);
-    // if(pedidoProduto == undefined){
-    //     return { erro: "Erro ao encontrar 'orderProducts'"}
-    // }
 
-    // if (pedido == undefined) {
-    //     return { erro: "Pedido não encontrado!" }
-    // }
+    if (pedidoProduto == undefined) {
+        return { erro: "Erro ao encontrar 'orderProducts'" }
+    }
 
-    // if(pedido.status == "Fechado"){
-    //     return { erro: "Você não pode adicionar ou retirar produtos em um pedido fechado!"}
-    // } 
+    if (pedido == undefined) {
+        return { erro: "Pedido não encontrado!" }
+    }
 
-    // if(pedido.quantity <= 0){
-    //     return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
-    // }
-    
+    if (pedido.status == "Fechado") {
+        return { erro: "Você não pode adicionar ou retirar produtos em um pedido fechado!" }
+    }
+
+    if (pedido.quantity <= 0) {
+        return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
+    }
+
     if (pedidoProduto.productIds.productId == dado.productId) {
-        //console.log(dado.productId);
         const produtos = {
             productId: pedidoProduto.productIds.productId,
-            quantity: pedidoProduto.productIds.quantity + dado.quantity
+            quantity: (pedidoProduto.productIds.quantity + dado.productIds.quantity)
         }
         const novoProdutoPedido = {
             productIds: produtos,
             orderId: dado.orderId
         }
-        //console.log(novoProdutoPedido);
     }
-
-
-    //return await save(tabela, id, dado);
+    //return await save(tabela, id, novoProdutoPedido);
 }
 
 async function deletarOrderProducts(id) {

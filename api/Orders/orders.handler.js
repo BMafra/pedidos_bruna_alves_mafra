@@ -42,15 +42,17 @@ async function cadastrarOrders(dado) {
 
 async function editarOrders(id, dado) {
     const pedido = (await buscarOrders()).find(e => e.id == id);
+
     if (pedido == undefined) {
         return { erro: "Pedido não encontrado!" }
     }
-    
+
     return await save(tabela, id, dado);
 }
 
 async function deletarOrders(id) {
     const pedido = (await buscarOrders()).find(e => e.id == id);
+
     if (pedido == undefined) {
         return { erro: "Pedido não encontrado!" }
     }

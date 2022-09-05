@@ -11,7 +11,7 @@ async function buscarUsersId(id) {
     if (usuario == undefined) {
         return { erro: "Erro ao encontrar usuário" }
     }
-    
+
     return await getById(tabela, id);
 }
 
