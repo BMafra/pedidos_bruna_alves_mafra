@@ -8,6 +8,7 @@ async function buscarOrders() {
 
 async function buscarOrdersId(id) {
     const pedido = (await buscarOrders()).find(e => e.id == id);
+    
     if (pedido == undefined) {
         return { erro: "Pedido não encontrado!" }
     }
@@ -34,7 +35,7 @@ async function cadastrarOrders(dado) {
     const pedido = {
         number: 1,
         userId: dado.userId,
-        status: "aberto"
+        status: "Aberto"
     }
 
     return await save(tabela, null, pedido);

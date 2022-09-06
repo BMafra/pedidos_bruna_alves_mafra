@@ -36,7 +36,7 @@ async function cadastrarOrderProducts(dado) {
             return { erro: "Produto não encontrado!" }
         }
 
-        if (dadoProduto.quantity <= 0) { //deletar da tabela
+        if (dadoProduto.quantity <= 0) { //deletar da tabela ????????????
             return { erro: "A quantidade do produto não pode ser igual a zero (0)." }
         }
     }
@@ -104,7 +104,7 @@ async function editarOrderProducts(id, dado) {
             orderId: dado.orderId
         }
     }
-    //return await save(tabela, id, novoProdutoPedido);
+    return await save(tabela, id, novoProdutoPedido);
 }
 
 async function deletarOrderProducts(id) {

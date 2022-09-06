@@ -26,12 +26,10 @@ async function editarProducts(id, dado) {
 }
 
 async function deletarProducts(id) {
-    const todosProdutos = await buscarProducts();
+    const produto = (await buscarProducts()).find(e => e.id == id);
 
-    for (const produto of todosProdutos) {
-        if (produto.id != id) {
-            return { erro: "Erro ao encontrar produto!" }
-        }
+    if (produto == undefined) {
+        return { erro: "Erro ao encontrar produto!" }
     }
 
     return await remove(tabela, id);
